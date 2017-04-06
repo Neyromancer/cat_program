@@ -24,5 +24,3 @@ Flag can look like -c[lines]:
 -t - equivalent to -vT
 -T - display TAB characters as ^I
 -c - colout every second line, counting from the 1st line
-	
-

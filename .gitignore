@@ -5,5 +5,5 @@
 *.sql
 *.sqlite
 
-# ignore all files int backup directory
+# ignore all files in backup directory
 backup/
