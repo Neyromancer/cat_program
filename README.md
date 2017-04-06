@@ -2,7 +2,7 @@
 reimplementation_of_standart_Linux_cat_command
 
 all standard functions of cat command will be reimplemented with
-an additional feature of highlighting lines with colour.
+an additional feature of highlighting lines.
 
 User can choose wich lines should be hightlighted, e.g.
 every 2nd line, every 3d and so on. 
