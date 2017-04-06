@@ -15,7 +15,7 @@ Flag can look like -c[lines]:
 	
 -A - display all
 -n - number all output lines
--N - display file name before outtputting file contents
+-N - display file name before outtputting it's contents
 -b - number non-blanl lines
 -e - equivalent to -vE
 -E - display $ at end of each line
