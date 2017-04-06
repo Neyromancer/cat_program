@@ -1,0 +1,9 @@
+*.[oa]
+*~
+*.exe
+
+*.sql
+*.sqlite
+
+#ignore all files int backup directory
+backup/
