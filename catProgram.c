@@ -201,32 +201,7 @@ static int processOption( char *const line, int *const optionArr ) {
 	int i = 1;	// not start from 0 as line[ 0 ] occupied with " - "
 	do {
 		optionArr[ ( line[ i ] - '-' ) ] = 1;
-		/*
-		switch( line[ i ] ) {
-			case 'n':
-				optionArr[ ( 'n' - '-' ) ] = 1;
-				break;
-
-			case 'b':
-				optionArr[ ( 'b' - '-' ) ] = 1;
-				break;
-
-			case 'E':
-				optionArr[ ( 'E' - '-' ) ] = 1;
-				break;
-
-			case 's':
-				optionArr[ ( 's' - '-' ) ] = 1;
-				break;
-
-			case 'c':
-				optionArr[ ( 'c' - '-' ) ] = 1;
-				break;
-			default:
-				printf( "Error occured: -- %c no such option", line[ i ] );
-				return -1;
-
-		} */
+		
 		++i;
 	} while ( line[ i ] != '\0' );
 
