@@ -200,6 +200,8 @@ static int isOptionAvailable( char ch ) {
 static int processOption( char *const line, int *const optionArr ) {
 	int i = 1;	// not start from 0 as line[ 0 ] occupied with " - "
 	do {
+		optionArr[ ( line[ i ] - '-' ) ] = 1;
+		/*
 		switch( line[ i ] ) {
 			case 'n':
 				optionArr[ ( 'n' - '-' ) ] = 1;
@@ -224,7 +226,7 @@ static int processOption( char *const line, int *const optionArr ) {
 				printf( "Error occured: -- %c no such option", line[ i ] );
 				return -1;
 
-		}
+		} */
 		++i;
 	} while ( line[ i ] != '\0' );
 
