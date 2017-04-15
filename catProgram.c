@@ -123,11 +123,8 @@ static int writeStdOut( char *const textLine, char *const lineOfOptions, int opt
    *	+A - display all
    *	+n - number all output lines
    *	-b - number non-blank lines
-<<<<<<< HEAD
    *	+e - equivalent to -vE
-=======
    *	-e - equivalent to -vE
->>>>>>> c38cce58649e337259f191f1bfd03016d1e05112
    *	+E - display $ at the end of each line
    *	-v - show non-printing characters
    *	-s - suppress repeated empty output lines
@@ -152,7 +149,6 @@ static int writeStdOut( char *const textLine, char *const lineOfOptions, int opt
 			optionArr[ ( 't' - '-' ) ] = 1;
 			optionArr[ ( 'c' - '-' ) ] = 1;
 		}
-<<<<<<< HEAD
 
 		if ( 1 == optionArr[ ( 'e' - '-' ) ] ) {
 			optionArr[ ( 'v' - '-' ) ] = 1;
@@ -175,7 +171,6 @@ static int writeStdOut( char *const textLine, char *const lineOfOptions, int opt
 		else
 			printf( "%s", textLine );
 
-=======
 //		printf( "OptionEntered\n" );
 		if ( 1 == optionArr[ ( 'c' - '-' ) ] && countLines % linesToColor == 0 )
 			printf( BLUE );
@@ -188,7 +183,6 @@ static int writeStdOut( char *const textLine, char *const lineOfOptions, int opt
 		else
 			printf( "%s", textLine );
 
->>>>>>> c38cce58649e337259f191f1bfd03016d1e05112
 		++countLines;
 	} else printf( "%s", textLine );
 	printf( WHITE );
