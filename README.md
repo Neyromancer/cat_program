@@ -9,13 +9,13 @@ every 2nd line, every 3d and so on.
 
 Flag can look like -c[lines]: 
 
--c - default option, stays for every 2nd line to be colored ( the same as -c2 )
++c - default option, stays for every 2nd line to be colored ( the same as -c2 )
 
--c3 - every 3d line to be colored
++c3 - every 3d line to be colored
 	
--A - display all
++A - display all
 
--n - number all output lines
++n - number all output lines
 
 -N - display file name before outtputting it's contents
 
@@ -23,7 +23,7 @@ Flag can look like -c[lines]:
 
 -e - equivalent to -vE
 
--E - display $ at end of each line
++E - display $ at end of each line
 
 -v - show non-printing characters
 
