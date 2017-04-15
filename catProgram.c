@@ -1,6 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stddef.h>	// included just in case with stdio.h won't compile
+#include <string.h>
+#include <ctype.h>
+
+//=============== define terminal output appearance ============
+#define BLACK		"\x1B[30m"
+#define RED		"\x1B[31m"
+#define GREEN		"\x1B[32m"
+#define YELLOW		"\x1B[33m"
+#define BLUE		"\x1B[34m"
+#define MAGENTA		"\x1B[35m"
+#define CYAN		"\x1B[36m"
+#define WHITE		"\x1B[37m"
+//==============================================================
 
 // prototypes
 static int displayFileContents( char **const, const int );
@@ -9,8 +23,10 @@ static int isOption( char *const );
 static int processFile( const char *, char *const, int );
 static int readFileContents( FILE *, char *const, int );
 static int writeStdOut( char *const, char *const, int );
-static int processOption( char *const, int *const );	// process options
+static int processOption( char *const, int *const, int * );	// process options
 static int isOptionAvailable( char );
+static void printText( char *const );
+//static void setColor( /* int, int, int */ ); this function can be used to set particular text colour
 
 // process any stdin fed
 int processInput( int argc, char **const argv) {
@@ -26,11 +42,11 @@ int processInput( int argc, char **const argv) {
    * Check if options were entered and which options were entered.
 ***/
 static int displayFileContents( char **const arr, const int arrSize ) {	
-	int positionOfOptionLine = 0;	// set to 0 as 0 in *argv[] occupied by program name
+	size_t positionOfOptionLine = 0;	// set to 0 as 0 in *argv[] occupied by program name
 	int optionEntered = 0;	// 0 stays for no option enetered and 1 - for entered
 
 	// find the position of option line in the squence entered
-	for ( int i = 1; i < arrSize; ++i )
+	for ( size_t i = 1; i < arrSize; ++i )
 		if ( isOption( arr[ i ] ) == 1 ) {
 			optionEntered = 1;
 			positionOfOptionLine = i;
@@ -44,7 +60,7 @@ static int displayFileContents( char **const arr, const int arrSize ) {
 	}
 
 	// process all entered files
-	for ( int i = 1; i < arrSize; ++i )
+	for ( size_t i = 1; i < arrSize; ++i )
 		if ( i != positionOfOptionLine )
 			if ( processFile( arr[ i ], arr[ positionOfOptionLine ], optionEntered ) < 0 )
 				return -1;
@@ -104,22 +120,24 @@ static int readFileContents( FILE *fileName, char *const lineOfOptions, int opti
 
 static int writeStdOut( char *const textLine, char *const lineOfOptions, int optionEntered ) {
 /***	
-   *	-A - display all
-   *	-n - number all output lines
-   *	-b - number non-blanl lines
+   *	+A - display all
+   *	+n - number all output lines
+   *	-b - number non-blank lines
    *	-e - equivalent to -vE
-   *	-E - display $ at end of each line
+   *	+E - display $ at the end of each line
    *	-v - show non-printing characters
    *	-s - suppress repeated empty output lines
    *	-t - equivalent to -vT
    *	-T - display TAB characters as ^I
-   *	-c - colout every second line, counting from the 1st line
+   *	+c - colour every second line, counting from the 1st line
+   *    +c[...] - colour every numer line, number set in [...]
    *	
 ***/	
 	static int optionArr[ 77 ] = {};
+	static int linesToColor = 2;	// represent which lines to color
 //	printf( "in writeStdOut function\n" );
 	if ( optionEntered != 0 ) {
-		processOption( lineOfOptions, optionArr );
+		processOption( lineOfOptions, optionArr, &linesToColor );
 
 		static int countLines = 1;	// number displayed in stdout before the line if option_n was set
 		if ( optionArr[ ( 'A' - '-' ) ] == 1 ) {
@@ -130,21 +148,25 @@ static int writeStdOut( char *const textLine, char *const lineOfOptions, int opt
 			optionArr[ ( 'c' - '-' ) ] = 1;
 		}
 //		printf( "OptionEntered\n" );
-		if ( optionArr[ ( 'n' - '-' ) ] == 1 ) {
-			printf( "%d. ", countLines );
-			++countLines;
-		}
-		printf( "%s", textLine );
-		if ( optionArr[ ( 'E' - '-' ) ] == 1 )
-			printf( "$\n" );
+		if ( 1 == optionArr[ ( 'c' - '-' ) ] && countLines % linesToColor == 0 )
+			printf( BLUE );
 
+		if ( 1 == optionArr[ ( 'n' - '-' ) ] ) 
+			printf( "%d. ", countLines );
+		
+		if ( 1 == optionArr[ ( 'E' - '-' ) ] )
+			printText( textLine );
+		else
+			printf( "%s", textLine );
+
+		++countLines;
 	} else printf( "%s", textLine );
+	printf( WHITE );
 }
 
 // check if the entered line is an option
-
 static int isOption( char *const line ) {
-	// is not an option check if the 1st symbol of entered line is '-' which stays for starting an option
+	// is not an option, check if the 1st symbol of entered line is '-' which stays for starting an option
 	int ifOption = 0; 
 	if ( line[ 0 ] != '-' )	
 		return ifOption;
@@ -191,42 +213,24 @@ static int isOptionAvailable( char ch ) {
 		case 'T':
 		case 'c':
 			return 1;	// option found
+		default:
+			if ( isdigit( ch ) )
+				return 1;
 	}
+
 
 	return 0;	// no such option
 }
 
 // process options via reference and set if they entered or not
-static int processOption( char *const line, int *const optionArr ) {
-	int i = 1;	// not start from 0 as line[ 0 ] occupied with " - "
+static int processOption( char *const line, int *const optionArr, int *lineToColor ) {
+	size_t i = 1;	// not start from 0 as line[ 0 ] occupied with " - "
 	do {
-		optionArr[ ( line[ i ] - '-' ) ] = 1;
-		/*
-		switch( line[ i ] ) {
-			case 'n':
-				optionArr[ ( 'n' - '-' ) ] = 1;
-				break;
+		if ( !isdigit( line[ i ] ) )
+			optionArr[ ( line[ i ] - '-' ) ] = 1;
+		else if ( line[ i - 1 ] == 'c' ) 
+			*lineToColor = ( line[ i ] - '0' );
 
-			case 'b':
-				optionArr[ ( 'b' - '-' ) ] = 1;
-				break;
-
-			case 'E':
-				optionArr[ ( 'E' - '-' ) ] = 1;
-				break;
-
-			case 's':
-				optionArr[ ( 's' - '-' ) ] = 1;
-				break;
-
-			case 'c':
-				optionArr[ ( 'c' - '-' ) ] = 1;
-				break;
-			default:
-				printf( "Error occured: -- %c no such option", line[ i ] );
-				return -1;
-
-		} */
 		++i;
 	} while ( line[ i ] != '\0' );
 
@@ -237,8 +241,8 @@ static int processOption( char *const line, int *const optionArr ) {
 static void displayStdInStdOut( void ){
 	char *line;
 	char buffer[ 4096 ];
-	int i = 0;
-	line = ( char * )malloc( sizeof( buffer ) ); // check for mistakes
+	size_t i = 0;
+	line = ( char * )malloc( sizeof( buffer ) ); // check for errors
 	
 	while ( i >= 0 ) {
 		line[ i ] = getchar();
@@ -246,3 +250,16 @@ static void displayStdInStdOut( void ){
 		++i;
 	}
 }
+
+//===================== Print Line Of Text With Special Character At The End Of The Line ==============================//
+static void printText( char *const textLine ) {
+	textLine[ strlen( textLine ) - 1 ] = '$';
+	printf( "%s\n", textLine );
+}
+
+/* this function will be used for setting colours
+//============================================= Change - Output Text Color ============================================//
+static void setColor( / int attr, int bg, int fg / ) {
+	
+}
+*/

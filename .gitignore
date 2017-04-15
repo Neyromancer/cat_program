@@ -1,9 +1,12 @@
 *.[oa]
 *~
 *.exe
+*.swp
 
 *.sql
 *.sqlite
 
 # ignore all files in backup directory
 backup/
+
+sour*
