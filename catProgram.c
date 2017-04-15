@@ -54,7 +54,7 @@ static int displayFileContents( char **const arr, const int arrSize ) {
 
 	// check if any file name was entered
 	if ( ( arrSize == 2 ) && ( positionOfOptionLine != 0 ) )  {
-		printf( "incorrect input. No file entered." );
+		puts( "incorrect input. No file entered." );
 
 		return -1;
 	}
@@ -123,10 +123,11 @@ static int writeStdOut( char *const textLine, char *const lineOfOptions, int opt
    *	+A - display all
    *	+n - number all output lines
    *	-b - number non-blank lines
-   *	-e - equivalent to -vE
+   *	+e - equivalent to -vE
    *	+E - display $ at the end of each line
    *	-v - show non-printing characters
    *	-s - suppress repeated empty output lines
+   *    -d - delete extensive spaces
    *	-t - equivalent to -vT
    *	-T - display TAB characters as ^I
    *	+c - colour every second line, counting from the 1st line
@@ -140,14 +141,24 @@ static int writeStdOut( char *const textLine, char *const lineOfOptions, int opt
 		processOption( lineOfOptions, optionArr, &linesToColor );
 
 		static int countLines = 1;	// number displayed in stdout before the line if option_n was set
-		if ( optionArr[ ( 'A' - '-' ) ] == 1 ) {
+		if ( 1 == optionArr[ ( 'A' - '-' ) ] ) {
 			optionArr[ ( 'n' - '-' ) ] = 1;
 			optionArr[ ( 'e' - '-' ) ] = 1;
 			optionArr[ ( 's' - '-' ) ] = 1;
 			optionArr[ ( 't' - '-' ) ] = 1;
 			optionArr[ ( 'c' - '-' ) ] = 1;
 		}
-//		printf( "OptionEntered\n" );
+
+		if ( 1 == optionArr[ ( 'e' - '-' ) ] ) {
+			optionArr[ ( 'v' - '-' ) ] = 1;
+			optionArr[ ( 'E' - '-' ) ] = 1;
+		}
+
+		if ( 1 == optionArr[ ( 't' - '-' ) ] ) {
+			optionArr[ ( 'v' - '-' ) ] = 1;
+			optionArr[ ( 'T' - '-' ) ] = 1;
+		}
+
 		if ( 1 == optionArr[ ( 'c' - '-' ) ] && countLines % linesToColor == 0 )
 			printf( BLUE );
 
