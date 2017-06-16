@@ -33,22 +33,4 @@ Flag can look like -c[lines]:
 
 -T - display TAB characters as ^I
 
--c - colout every second line, counting from the 1st line
-
-<<<<<<< HEAD
--c3 - every 3d line to be colored
-	
-+A - display all
-+n - number all output lines
--N - display file name before outtputting it's contents
--b - number non-blanl lines
--e - equivalent to -vE
-+E - display $ at end of each line
--v - show non-printing characters
--s - suppress repeated empty output lines
--t - equivalent to -vT
--T - display TAB characters as ^I
-+c - colout every second line, counting from the 1st line
-+c[...] - colour every numer line, number set in [...]
-=======
->>>>>>> c38cce58649e337259f191f1bfd03016d1e05112
+-c - colour every second line, counting from the 1st line
